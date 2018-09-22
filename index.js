@@ -2,11 +2,18 @@ function getAllData()
 {
     let request = new XMLHttpRequest();
     const url = `http://stream26.com/api/radio`;
+
+    request.open("GET", url, true);
+    request.send();
+
     var datasArray = [];
+
+    //on supprime tout les élements créé lors d'une précédente requete, afin de "rafraichire" le résultat
     var Radios = document.getElementById('Radios');
     while (Radios.firstChild) {
       Radios.removeChild(Radios.firstChild);
   }
+
     request.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             var response = request.response;
@@ -24,45 +31,33 @@ function getAllData()
                 link: responJson[i]["streamUrl"]
             }
 
-            datasArray.push(item);
+            appendDataElementToDom(item);
           }
-          
-          
-          for(var i =0;i<datasArray.length;i++)
-          { 
-            var button = document.createElement("button");
+        }
+      }
+}
+
+function appendDataElementToDom(data)
+{
+  var button = document.createElement("button");
             var br = document.createElement("BR");
-            button.innerHTML = datasArray[i].name
-            button.id = datasArray[i].id;
+            button.innerHTML = data.name
+            button.id = data.id;
 
             //la variable ci-dessous est utilisée afin d'envoyer l'id du logo à la page suivante, afin d'afficher celui-ci
-            button.logo = datasArray[i].logId;
+            button.logo = data.logId;
             
-            
-            button.onclick = function(e) { // Note this is a function
+            button.onclick = function(e) { 
               getSpecifiedData(e.target.id,e.target.logo);
               
             };
             
             Radios.appendChild(button);
             Radios.appendChild(br);
-          }
-          
-          // var firstRequestButton = document.getElementById('firstRequest');
-          // firstRequestButton.remove();
-
-        }
-      }
-
-    request.open("GET", url, true);
-    request.send();
-
 }
 
 function getSpecifiedData(id,logoId)
 {
-
-  var elems = document.querySelectorAll('.toRemove');
 
   // on envoi le radioId afin de collecter tous les programmes à afficher
     localStorage.setItem("radioID",id);
@@ -70,7 +65,6 @@ function getSpecifiedData(id,logoId)
   // on envoi le logoId afin d'afficher le logo de la radio
     localStorage.setItem("logoID",logoId);
 
-    console.log(id);
     var url = "detailed.html";
     window.open(url);
 }
