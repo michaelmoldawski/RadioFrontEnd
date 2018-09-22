@@ -1,51 +1,55 @@
-
-    
-var datasArray = [];
-
 function getAllData()
 {
     let request = new XMLHttpRequest();
     const url = `http://stream26.com/api/radio`;
-
+    var datasArray = [];
+    var Radios = document.getElementById('Radios');
+    while (Radios.firstChild) {
+      Radios.removeChild(Radios.firstChild);
+  }
     request.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             var response = request.response;
           var responJson = JSON.parse(response);
           
-          var test = responJson[0];
-          var test2 = test["_id"];
+          // La boucle suivante construit un array contenant toutes les données retournées par l'api
           for(var i=0;i<responJson.length;i++)
           {
             console.log(responJson[i]["name"]);
             var item = {
                 id: responJson[i]["_id"],
                 name: responJson[i]["name"],
+                logId: responJson[i]["logoId"],
                 streamFormat: responJson[i]["streamFormat"],
                 link: responJson[i]["streamUrl"]
             }
 
             datasArray.push(item);
           }
-          var output = document.getElementById('output');
+          
+          
           for(var i =0;i<datasArray.length;i++)
-          {
-            // output.innerHTML += "<br> <div id='"+datasArray[i].id+"onclick='getSpecifedData()' class= generalData>"+datasArray[i].name  +"</div>"
-            var button = document.createElement("BUTTON");
+          { 
+            var button = document.createElement("button");
             var br = document.createElement("BR");
             button.innerHTML = datasArray[i].name
             button.id = datasArray[i].id;
-            button.className = "toRemove"
+
+            //la variable ci-dessous est utilisée afin d'envoyer l'id du logo à la page suivante, afin d'afficher celui-ci
+            button.logo = datasArray[i].logId;
+            
             
             button.onclick = function(e) { // Note this is a function
-              getSpecifiedData(e.target.id);
+              getSpecifiedData(e.target.id,e.target.logo);
               
             };
-            // element.addEventListener("click", getSpecifiedData(), false);
-            document.body.appendChild(button);
-            document.body.appendChild(br);
+            
+            Radios.appendChild(button);
+            Radios.appendChild(br);
           }
-          var firstRequestButton = document.getElementById('firstRequest');
-          firstRequestButton.remove();
+          
+          // var firstRequestButton = document.getElementById('firstRequest');
+          // firstRequestButton.remove();
 
         }
       }
@@ -55,15 +59,18 @@ function getAllData()
 
 }
 
-function getSpecifiedData(id)
+function getSpecifiedData(id,logoId)
 {
-  // $('.toRemove').remove();
-  var elems = document.querySelectorAll('.toRemove');
-  Array.prototype.forEach.call( elems, function( node ) {
-    node.parentNode.removeChild( node );
-});
 
-localStorage.setItem("valueToPAss",id);
-              // elems.remove();
-  console.log(id);
+  var elems = document.querySelectorAll('.toRemove');
+
+  // on envoi le radioId afin de collecter tous les programmes à afficher
+    localStorage.setItem("radioID",id);
+
+  // on envoi le logoId afin d'afficher le logo de la radio
+    localStorage.setItem("logoID",logoId);
+
+    console.log(id);
+    var url = "detailed.html";
+    window.open(url);
 }
