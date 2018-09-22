@@ -21,7 +21,6 @@ function initiateResultPage(itemId,logoId)
                 var response = request.response;
                 var responJson = JSON.parse(response);
 
-           
                 var item = {
                     id: responJson["_id"],
                     contentType: responJson["contentType"],
@@ -36,6 +35,7 @@ function initiateResultPage(itemId,logoId)
             if(item.contentType == "program")
             {
                 setTitleElement(item.content["name"]);
+                startDowload(item.metaData["podcastUrl"])
             }
             if(item.contentType=="text")
             {
@@ -54,4 +54,13 @@ function setTitleElement(title)
     
     itemElement.appendChild(itemTitle);
     itemElement.appendChild(br);
+}
+
+function startDowload (url)
+{
+    var downloadHref = document.createElement("a");
+    downloadHref.setAttribute("href",url); 
+    downloadHref.innerHTML = "download link";
+    itemElement.appendChild(downloadHref)
+
 }

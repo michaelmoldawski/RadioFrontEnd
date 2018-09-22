@@ -1,3 +1,4 @@
+var Radios = document.getElementById('Radios');
 function getAllData()
 {
     let request = new XMLHttpRequest();
@@ -9,7 +10,6 @@ function getAllData()
     var datasArray = [];
 
     //on supprime tout les élements créé lors d'une précédente requete, afin de "rafraichire" le résultat
-    var Radios = document.getElementById('Radios');
     while (Radios.firstChild) {
       Radios.removeChild(Radios.firstChild);
   }
