@@ -65,6 +65,6 @@ function getSpecifiedData(id,logoId)
   // on envoi le logoId afin d'afficher le logo de la radio
     localStorage.setItem("logoID",logoId);
 
-    var url = "detailed.html";
+    var url = "radioItems.html";
     window.open(url);
 }

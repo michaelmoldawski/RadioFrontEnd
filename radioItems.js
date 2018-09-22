@@ -1,17 +1,13 @@
 var radioId = localStorage.getItem("radioID");
 var logoId = localStorage.getItem("logoID");
-var datasArray = [];
-
+var RadioProgram = document.getElementById('RadioProgram');
 
 initiateResultPage(radioId,logoId);
 function initiateResultPage(id,logoId)
 {
-
     var logoContainer = document.getElementById("logoContainer");
     var logo = document.createElement("img");
     logo.src ="http://stream26.com/api/storage/"+logoId;
-
-      
     logoContainer.appendChild(logo);
 
     let request = new XMLHttpRequest();
@@ -26,8 +22,8 @@ function initiateResultPage(id,logoId)
 
           for(var i=0;i<responJson.length;i++)
           {
-            console.log(responJson[i]["name"]);
             var item = {
+                id: responJson[i]["_id"],
                 contentType: responJson[i]["contentType"],
                 content: responJson[i]["content"],
                 radioId: responJson[i]["radioId"],
@@ -45,51 +41,44 @@ function initiateResultPage(id,logoId)
                 item.name = item.content["text"]
             }
 
-            datasArray.push(item);
+            displayData(item);
           }
-
-          displayData(datasArray)
-
         }
     }
 }
 
-function displayData(datas)
+function displayData(data)
 {
-    var RadioProgram = document.getElementById('RadioProgram');
-          for(var i =0;i<datasArray.length;i++)
-          {
-            // var itemDiv = document.createElement("div");
             var itemTitle = document.createElement("h1")
+            itemTitle.innerHTML = data.name;
+
             var itemType = document.createElement("div")
-            itemType.innerHTML = datasArray[i].contentType
-            itemTitle.innerHTML = datasArray[i].name;
+            itemType.innerHTML = data.contentType;
+            itemTitle.logo = logoId;
+            itemTitle.radioId= data.radioId;
             itemTitle.appendChild(itemType);
 
             var br = document.createElement("BR");
             
+            itemTitle.id = data.id;
             itemTitle.onclick = function(e) { // Note this is a function
-                getSpecifiedData(e.target.id,e.target.logo);
+                getSpecifiedData(e.target.radioId,e.target.id,e.target.logo);
                 
               };
 
               RadioProgram.appendChild(itemTitle);
               RadioProgram.appendChild(br);
-          }
 }
 
-function getSpecifiedData(id,logoId)
+function getSpecifiedData(radioId,id,logoId)
 {
-
-  var elems = document.querySelectorAll('.toRemove');
-
   // on envoi le radioId afin de collecter tous les programmes à afficher
-    localStorage.setItem("radioID",id);
+  localStorage.setItem("radioId",radioId);  
+  localStorage.setItem("itemId",id);
 
   // on envoi le logoId afin d'afficher le logo de la radio
     localStorage.setItem("logoID",logoId);
 
-    console.log(id);
-    var url = "detailed.html";
+    var url = "specifiedItem.html";
     window.open(url);
 }
